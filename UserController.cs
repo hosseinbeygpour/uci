@@ -5,11 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UCI.Application.Services.Users.Command.EditeUser;
 using UCI.Application.Services.Users.Command.RegisterUser;
 using UCI.Application.Services.Users.Command.RemoveUser;
+using UCI.Application.Services.Users.Command.UserstatusChenge;
 using UCI.Application.Services.Users.Query.GetRoles;
 using UCI.Application.Services.Users.Query.GetUser;
 using UCI.Common.Dto;
+using static UCI.Application.Services.Users.Command.EditeUser.Editeuser;
 
 namespace EndPoint.Site.Areas.Admin.Controllers
 {
@@ -32,15 +35,24 @@ namespace EndPoint.Site.Areas.Admin.Controllers
         //4
         //برای حذف کردن یوزور باید متد مربوطه را اینجا نمونه سازی کنیم تا بتونیم از توابع و متد هاش استفاده کنیم
         private readonly IRemoveUserService _removeUserService;
+        //5
+        // برای تغییر وضعیت فعال یا فعال نبودن یوز باید نمونه سازی متد مربوطه را اینجا انجام دهیم
+        private readonly IUserstatusChenge _userstatusChenge;
+        //6
+        //برای ویرایش کاربران
+        private readonly IEditeUser _editeUser;
 
         public UserController(IGetUserService getUserService, IGetRolesService getRolesService,
             IRegisterUserService registerUserService,
-            IRemoveUserService removeUserService)
+            IRemoveUserService removeUserService,
+            IUserstatusChenge userstatusChenge,
+            IEditeUser editeUser)
         {
             _getUserService = getUserService;
             _getRolesService = getRolesService;//پر کردن کامبوباکس مربوط به نقش ها
             _registerUserService = registerUserService;
             _removeUserService = removeUserService;
+            _userstatusChenge = userstatusChenge;//تغییر وضعیت یوزر
         }
 
 
@@ -108,8 +120,19 @@ namespace EndPoint.Site.Areas.Admin.Controllers
            
 
         }
-        //##################################################################################################################
-
-
+        //######################################################################################################################
+        //اکشن تغییر وضعیت دادن یوزر
+        [HttpPost]
+        public IActionResult ChengeuserStatus(long USID)
+        {
+            return Json(_userstatusChenge.Excute(USID));
+        }
+        //######################################################################################################################
+        //برای ویرایش کاربران
+        [HttpPost]
+        public IActionResult Edite(long UserId,string Fullname)
+        {
+            return Json(_editeUser.Execute(new RequestEditeUserDto { FullName = Fullname, UserID = UserId ,}));
+        }
     }
 }
