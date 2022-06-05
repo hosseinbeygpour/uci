@@ -4,16 +4,22 @@
     //16
     //یوزینگ کلاس ریزولت گت یوزر دی تی یو رو اینجا وارد می کنیم
 *@
+
 @using UCI.Application.Services.Users.Query.GetUser
 @model ResultGetUserDto;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Adminlayot.cshtml";
 }
+
 <div class="box">
+
     <div class="box-header">
         <h3 class="box-title">لیست کاربران </h3>
     </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#d">
+        Click
+    </button>
     <!-- /.box-header -->
     <div class="box-body">
         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
@@ -25,26 +31,40 @@
                                 <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="شماره کاربری: activate to sort column descending">شماره کاربری</th>
                                 <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="نام کامل: activate to sort column ascending">نام کامل</th>
                                 <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="ایمیل: activate to sort column ascending">ایمیل</th>
-
                             </tr>
                         </thead>
                         <tbody>
+
                             @foreach (var item in Model.Users)
                             {
-
                                 <tr role="row" class="odd">
                                     <td class="sorting_1">@item.id</td>
                                     <td>@item.FullName</td>
                                     <td>@item.Email</td>
                                     <td>
-                                        <button class="btn btn-info">ویرایش</button>
-                                        @*<button class="btn btn-danger" onclick="deletuser('@item.id')">حذف</button>*@
+                                        <button type="button" class="btn btn-info" id="4" onclick="Sho()">ویرایش</button>
+
                                         <button class="btn btn-danger" onclick="DeleteUser('@item.id')">حذف</button>
-                                        <button class="btn btn-warning">غیر فعال</button>
+                                        @if (item.isactive)
+                                        {
+                                            <button class="btn btn-warning" onclick="chengstatus('@item.id')">غیر فعال</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-warning" onclick="chengstatus('@item.id')"> فعال</button>
+                                        }
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#ddd">
+                                            Launch demo modal
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-lg" onclick="ShowModalEdituser('@item.id', '@item.FullName')">ویرایش</button>
                                     </td>
+
+
                                 </tr>
 
                             }
+
                         </tbody>
                         @* <tfoot>
                                 <tr><th rowspan="1" colspan="1">موتور رندر</th><th rowspan="1" colspan="1">مرورگر</th><th rowspan="1" colspan="1">سیستم عامل</th><th rowspan="1" colspan="1">ورژن</th><th rowspan="1" colspan="1">امتیاز</th></tr>
@@ -53,78 +73,293 @@
                 </div>
             </div><div class="row"><div class="col-sm-5"><div class="dataTables_info" id="example2_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div></div><div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers" id="example2_paginate"><ul class="pagination"><li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a></li><li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">1</a></li><li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="2" tabindex="0">2</a></li><li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="3" tabindex="0">3</a></li><li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="4" tabindex="0">4</a></li><li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="5" tabindex="0">5</a></li><li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="6" tabindex="0">6</a></li><li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li></ul></div></div></div>
         </div>
+        <!-- /.box-body -->
+
+
     </div>
-    <!-- /.box-body -->
+
 </div>
+
 @section Scripts
 {
-<link href="~/limonte-sweetalert2/sweetalert2.css" rel="stylesheet" />
-<script src="~/limonte-sweetalert2/sweetalert2.js"></script>
-<script src="~/limonte-sweetalert2/sweetalert2.min.js"></script>
-<script src="~/limonte-sweetalert2/sweetalert2.all.js"></script>
-<link href="~/Sweetalert21223/sweetalert2.min.css" rel="stylesheet" />
-<script src="~/Sweetalert21223/sweetalert2.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
 
+    <script src="~/Admin Template/file/jquery-3.6.0.min.js"></script>
+    <script src="~/Admin Template/file/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <!--<link href="~/limonte-sweetalert2/sweetalert2.css" rel="stylesheet" />
+    <script src="~/limonte-sweetalert2/sweetalert2.js"></script>
+           <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="~/limonte-sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/limonte-sweetalert2/sweetalert2.all.js"></script>
+    <link href="~/Sweetalert21223/sweetalert2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/lib/twitter-bootstrap/js/bootstrap.min.js"></script>
+          <script src="/jquery-3.3.1.min.js"></script>
 
-<script>
-    function DeleteUser(UserId) {
-        swal.fire({
-            title: 'حذف کاربر',
-            text: "کاربر گرامی از حذف کاربر مطمئن هستید؟",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#7cacbe',
-            confirmButtonText: 'بله ، کاربر حذف شود',
-            cancelButtonText: 'خیر'
-        }).then((result) => {
-            if (result.value) {
-                var postData = {
-                    'UserId': UserId,
-                };
+           <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        -->
 
-                $.ajax({
-                    contentType: 'application/x-www-form-urlencoded',
-                    dataType: "json",
-                    type: "POST",
-                    url: "Delete",
-                    data: postData,
-                    success: function (data) {
-                        //if (data.status!=="success")
-                        //if (data.status=="success")
-                    if(data=='true')
-                        {
-                            swal.fire(
-                                'موفق!',
-                                data.message,
-                                'success'
-                            ).then(function (isConfirm) {
-                                location.reload();
+    <script src="~/Sweetalert21223/sweetalert2.min.js"></script>
+    <link href="~/Sweetalert21223/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/Admin Template/file/bower_components/bootstrap/js/modal.js"></script>
+    <script src="~/Admin Template/file/plugins/jQueryUI/jquery-ui.js"></script>
+    <script>
+        function DeleteUser(UserId) {
+            swal.fire({
+                title: 'حذف کاربر',
+                text: "کاربر گرامی از حذف کاربر مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله ، کاربر حذف شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+                    var postData = {
+                        'UserId': UserId,
+                    };
 
-                            });
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: "json",
+                        type: "POST",
+                        url: "Delete",
+                        data: postData,
+                        success: function (data) {
+                            if (data.issuccess == true) {
+                                swal.fire(
+                                    'موفق!',
+                                    data.message,
+                                    'success'
+                                ).then(function (isConfirm) {
+                                    location.reload();
+
+                                });
+                            }
+                            else {
+
+                                swal.fire(
+                                    'هشدار!',
+                                    data.message,
+                                    'warning'
+                                );
+
+                            }
+                        },
+                        error: function (request, status, error) {
+                            alert(request.responseText);
+
                         }
-                        else {
 
-                            swal.fire(
-                                'گمشو کثافت بیشعور!',
-                                data.message,
-                                'warning'
-                            );
+                    });
 
+                }
+            })
+        }
+
+
+        function chengstatus(USID) {
+            swal.fire({
+                title: 'تغییر وضعیت کاربر',
+                text: "کاربر گرامی از تغییر وضعیت کاربر مطمئن هستید؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#7cacbe',
+                confirmButtonText: 'بله ، تغییر وضعیت انجام شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+
+                    var postData = {
+                        'USID': USID,
+                    };
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        type: "POST",
+                        url: "ChengeuserStatus",
+                        data: postData,
+                        success: function (data) {
+                            if (data.issuccess == true) {
+                                swal.fire(
+                                    'موفق!',
+                                    data.message,
+                                    'success'
+                                ).then(function (isConfirm) {
+                                    location.reload();
+                                });
+                            }
+                            else {
+
+                                swal.fire(
+                                    'هشدار!',
+                                    data.message,
+                                    'warning'
+                                );
+
+                            }
+                        },
+                        error: function (request, status, error) {
+                            alert(request.responseText);
                         }
-                    },
-                    error: function (request, status, error) {
-                        alert(request.responseText);
 
+                    });
+
+                }
+
+            })
+        }
+
+
+        function ShowModalEdituser(UserId, fullName) {
+            alert("lk;k;lk;lk;lk;kl;lk;lk")
+            $('#Edit_Fullname').val(fullName)
+            $('#Edit_UserId').val(UserId)
+            $('#EditUser').Modal('show');
+        }
+
+        function EditUser() {
+            var usrId = $("#Edite_userId").val();
+            var fullname = $("#Edite_fullname").val();
+            var postData = {
+                'usrId': usrId,
+                'fullname': fullname,
+            };
+
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "POST",
+                url: "Edite",
+                data: postData,
+                success: function (data) {
+                    if (data.issuccess == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            location.reload();
+                        });
                     }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+            $('#EditUser').Modal('hide');
+        }
 
-                });
+        $(function () {
+            $("#4").click(function (e) {
+            $("#ddd").Modal('show');
+            });
 
-            }
-        })
-    }
-</script>
 
+            //jQuery('#ddd').modal();
+            //$('#ddd').appendTo("form").Modal('show');
+            //jQuery("#d").modal("show");
+            //$(document).ready(function () {
+            // $("#Sho").click(function () {
+            //  $("#d").modal();
+            // });
+            // });
+            // var myModal = new bootstrap.Modal(document.getElementById('m'), { keyboard: true });
+            // myModal.show();
+            //$(document).ready(function () { $('#ddd').modal('show'); });
+            // jQuery.noConflict();
+            // window.$('#ddd').modal();
+        });
+    </script>
+
+
+}
+
+
+
+
+@section Modals
+{
+
+    <!-- Modal Edit User -->
+    <div id="ddd" tabindex="-1" class="modal fade" role="dialog" aria-labelledby="exampleModalCenterTitle" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ویرایش کاربر</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <input type="hidden" id="Edit_UserId" />
+                            <label for="basicInput">نام و نام خانوادگی</label>
+                            <input type="text" class="form-control" id="Edit_Fullname">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="Edituser()">اعمال تغییرات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="EditUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ویرایش کاربر</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <input type="hidden" id="Edit_UserId" />
+                            <label for="basicInput">نام و نام خانوادگی</label>
+                            <input type="text" class="form-control" id="Edit_Fullname">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="Edituser()">اعمال تغییرات</a>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
